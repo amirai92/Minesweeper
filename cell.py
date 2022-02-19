@@ -1,15 +1,18 @@
-from tkinter import Button
+from tkinter import Button, Label
 import random
 import settings
 
 
 class Cell:
     all = []
+    cell_count = settings.CELL_COUNT
+    cell_count_label_object = None
 
     def __init__(self, x, y, is_mine=False):
         self.x = x
         self.y = y
         self.is_mine = is_mine
+        self.is_opened = False
         self.cell_btn_object = None
 
         # Append the object to the Cell.all list
@@ -23,13 +26,20 @@ class Cell:
         btn = Button(location, width=12, height=4)
         btn.bind('<Button-1>', self.left_click_actions)
         btn.bind('<Button-3>', self.right_click_actions)
-
         self.cell_btn_object = btn
+
+    @staticmethod
+    def create_cell_count_label(location):
+        lbl = Label(location, text=f"Cells left: {Cell.cell_count}",bg="black", fg="white", width=12, height=4, font=("", 30))
+        Cell.cell_count_label_object = lbl
 
     def left_click_actions(self, event):
         if self.is_mine:
             self.show_mine()
         else:
+            if self.surrounded_cells_mines_length == 0:
+                for cell_obj in self.surrounded_cells:
+                    cell_obj.show_cell()
             self.show_cell()
 
     def get_cell_by_axis(self, x, y):
@@ -64,7 +74,16 @@ class Cell:
         return counter
 
     def show_cell(self):
-        self.cell_btn_object.configure(text=self.surrounded_cells_mines_length)
+        if not self.is_opened:
+            Cell.cell_count -= 1
+            self.cell_btn_object.configure(text=self.surrounded_cells_mines_length)
+            # Replace the text of cell count label with the newer count
+            if Cell.cell_count_label_object:
+                Cell.cell_count_label_object.configure(
+                    text=f"Cells Left:{Cell.cell_count}"
+                )
+        # Mark the cell as opened (Use is as the last line of this method)
+        self.is_opened = True
 
     def show_mine(self):
         # A logic to interrupt the game and display a message that player lost!
