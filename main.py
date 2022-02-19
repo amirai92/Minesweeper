@@ -16,6 +16,9 @@ top_frame = Frame(
 )
 top_frame.place(x=0, y=0)
 
+game_title = Label(top_frame, bg="black", fg="white", text="Minesweeper Game", font=("", 48))
+game_title.place(x=utils.width_prct(25))
+
 left_frame = Frame(
     root,
     bg='black',
@@ -36,18 +39,15 @@ center_frame.place(
 )
 
 for x in range(settings.GRID_SIZE):
-    for y in range (settings.GRID_SIZE):
+    for y in range(settings.GRID_SIZE):
         c = Cell(x, y)
         c.create_btn_object(center_frame)
         c.cell_btn_object.grid(column=x, row=y)
 
-
 Cell.create_cell_count_label(left_frame)
-Cell.cell_count_label_object.place(x=0 , y=0)
+Cell.cell_count_label_object.place(x=0, y=0)
 
 Cell.randomize_mines()
 
-
-
-#Run the window
+# Run the window
 root.mainloop()

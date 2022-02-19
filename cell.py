@@ -44,6 +44,13 @@ class Cell:
                 for cell_obj in self.surrounded_cells:
                     cell_obj.show_cell()
             self.show_cell()
+            if Cell.cell_count == settings.MINES_COUNT:
+                ctypes.windll.user32.MessageBoxW(0, "Congratulations! You Have won the game!", "Game Over", 0)
+
+        # Cancel left and right click event if cell is already opened:
+        self.cell_btn_object.unbind("<Button-1>")
+        self.cell_btn_object.unbind("<Button-3>")
+
 
     def get_cell_by_axis(self, x, y):
         for cell in Cell.all:
@@ -85,7 +92,9 @@ class Cell:
                 Cell.cell_count_label_object.configure(
                     text=f"Cells Left:{Cell.cell_count}"
                 )
-        # Mark the cell as opened (Use is as the last line of this method)
+                #In case its mine candidate, the background will configure to SystemButtonFace
+                self.cell_btn_object.configure(bg="SystemButtonFace")
+        # Mark the cell as opened
         self.is_opened = True
 
     def show_mine(self):
