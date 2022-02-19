@@ -1,12 +1,23 @@
 from tkinter import Button
+import random
+import settings
 
 
 class Cell:
+    all = []
+
     def __init__(self, x, y, is_mine=False):
         self.x = x
         self.y = y
         self.is_mine = is_mine
         self.cell_btn_object = None
+
+        # Append the object to the Cell.all list
+        Cell.all.append(self)
+
+    def __repr__(self):
+        return f"Cell({self.x}), {self.y}"
+
 
     def create_btn_object(self, location):
         btn = Button(location, width=12, height=4, text=f"{self.x},{self.y}")
@@ -23,4 +34,8 @@ class Cell:
 
     @staticmethod
     def randomize_mines():
-        pass
+        picked_cells = random.sample(Cell.all, settings.MINES_COUNT)
+        for picked_cell in picked_cells:
+            picked_cell.is_mine = True
+
+
